@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 import datetime
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOnesField(User)
     headimg = models.FileField(upload_to="./uploadfiles")  #用户头像
     latestlogintime = models.DateTimeField(default=datetime.datetime.now())    #最近一次登录时间
 
@@ -17,6 +17,7 @@ class UserProfile(models.Model):
     	
 
 class Active(models.Model):
+    active_headimg = models.FileField(upload_to='./active_headimg')
     title = models.CharField(max_length=30, verbose_name=u'标题') #活动标题
     date = models.CharField(max_length=50, verbose_name=u'活动时间') #活动时间
     site = models.CharField(max_length=30, verbose_name=u'活动地点') #活动地点
@@ -26,11 +27,13 @@ class Active(models.Model):
     follow_num = models.IntegerField(default=0)  #活动关注人数
 
     choice = models.ForeignKey('Choice')  #活动类别
-    active_photo = models.ForeignKey('ActivePhoto')  #活动照片
-    huifu = models.ForeignKey('Huifu')   #活动回复
+    active_photo = models.ForeignKey('ActivePhoto', null=True, blank=True)  #活动照片
+    huifu = models.ForeignKey('Huifu', null=True, blank=True)   #活动回复
     
     def __unicode__(self):
         return self.title
+    class Meta:
+        ordering = ['-join_num']
 
 
 class Choice(models.Model):

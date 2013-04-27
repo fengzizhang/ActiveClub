@@ -34,13 +34,13 @@ td button{
    <div class="navbar-inner">
      <div class="container">
        <button class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse" type="button"></button>
-         <a class="brand" href="index1.html">ActiveClub</a>
+         <a class="brand" href="/index">ActiveClub</a>
            <div class="nav-collapse collapse">
               <ul class="nav">
-                  <li class="active"><a href="index1.html">主页</a></li>
+                  <li class="active"><a href="/index">主页</a></li>
                   <li><a  data-toggle="modal" href="#myModal" >关于我</a></li>
               </ul>
-              <form class="navbar-form pull-right" method="post" action="/login/">
+              <form class="navbar-form pull-right" method="post">
               <input class="span2" type="text"  name="username">
               <input class="span2" type="password" name="password">
               <button class="btn" type="submit">SignIn</button>
@@ -53,12 +53,12 @@ td button{
 
    <div class="hero-unit">
       <div class="row">
-       <div class="span2"><a href="index1.html"><img src="/static/Logo/1.gif" ></a></div>
+       <div class="span2"><a href="/index"><img src="/static/Logo/1.gif" ></a></div>
        <div class="span6"><h2>Welcome to <span style="color:red"> ActiveClub</span></h2></div>
        <div class="span4">
         <table>
        	
-       		<tr><td><input type="text" placeholder="活动名称、地点、时间"></td>
+       		<tr><td><input type="text" placeholder="活动名称、地点、时间" name='search'></td>
        		<td><button class="btn" type="submit">搜索</button></td></tr>
         </table>
        </div>      
@@ -66,78 +66,66 @@ td button{
    </div>
 
 <div class="row-fluid">
-  <center><div class="span6"><a href="index1.html"><h2>活动页</h2></a></div>
-  <div class="span3"><a href="index1.html"><h2>用户页</h2></a></div></center>
+  <center><div class="span6"><a href="/index"><h2>活动页</h2></a></div>
+  <div class="span3"><a href="/index"><h2>用户页</h2></a></div></center>
 </div> 
 <hr />    
 
 <div class="row-fluid">
 <center>
   <div class="span1">类型：</div>
-  <div class="span1">全部</div>
-  <div class="span1">电影</div>
-  <div class="span1">话剧</div>
-  <div class="span1">旅行</div>
-  <div class="span1">公益</div>
-  <div class="span1">聚会</div>
-  <div class="span1">讲座</div>
+  <div class="span1"><a href="">全部</a></div>
+  {% for choice in choices %}
+  <div class="span1"><a href="">{{ choice.choice }}</a></div>
+  {% endfor %}
 </center>
 </div>
 <div class="row-fluid">
 <center>
   <div class="span1">时间：</div>
-  <div class="span1">今天</div>
-  <div class="span1">明天</div>
-  <div class="span1">后天</div>
-  <div class="span1">最近一周</div>
-  <div class="span1">最近一月</div>
+  <div class="span1"><a href="">今天</a></div>
+  <div class="span1"><a href="">明天</a></div>
+  <div class="span1"><a href="">后天</a></div>
+  <div class="span1"><a href="">最近一周</a></div>
+  <div class="span1"><a href="">最近一月</a></div>
   <div class="span1" >选择日期</div>
 </center>
 </div>
 <hr/ width='860px'>
 <br><br>
-<div class="row-fluid">
-<center>
-  <div class="span3"><img src='tt/1.jpg' class="img-polaroid"></div>
-  <div class="span2"><img src='tt/2.jpg' class="img-polaroid"></div>
-  <div class="span3"><img src='tt/3.jpg' class="img-polaroid"></div>
-  <div class="span2"><h4>热门活动</h4></div>
-  <div class="span2"><h4><a href="remen.html">更多</a></h4></div>
-  <hr>
-</center>
+
+
+<div class="container-fluid">
+   <div class="row-fluid">
+
+     <div class="span9">
+         <div class="row-fluid">
+               {% for active in actives %}
+               <div class="span3"><img src='/static/{{ active.active_headimg }}' class="img-polaroid" width="200px" height="150px"></div>
+
+               {% endfor %}
+         </div>
+     </div>
+
+     <div class="span3">
+         <div class="span8"><h4 style="margin-left:10px">热门活动</h4></div>
+         <div class="span4"><h5><a href="/hot_actives">更多...</a></h5></div>
+         {% for hot_active in hot_actives %}
+             <div class="span5" style="margin-top: 30px"><img src='/static/{{hot_active.active_headimg}}' class="img-polaroid" width="100px" height="100px"></div>
+
+         {% endfor %}
+
+
+         <div class="span8" style="margin-top: 100px"><h4>猜你喜欢</h4></div>
+         <div class="span3" style="margin-top: 100px"><h5><a href="/cai_actives">更多...</a></h5></div>
+         {% for cai_active in cai_actives %}
+             <div class="span5" style="margin-top: 30px"><img src='/static/{{cai_active.active_headimg}}' class="img-polaroid" width="100px" height="100px"></div>
+         {% endfor %}
+
+     </div>
+   </div>
 </div>
 
-<div class="row-fluid">
-<center>
-  <div class="span3">dhfjksdhfsjhffd;f</div>
-  <div class="span2">fjsilfjsljflsjflsjfs</div>
-  <div class="span3">fijsldkjflkdsfjkdlsjf</div>
-  <div class="span2" style="margin-top:-200px"><img src='tt/5.jpg' class="img-polaroid" width="150px" height="200px"></div>
-  <div class="span2" style="margin-top:-230px;margin-left:1150px"><img src='tt/6.jpg' width="150px" height="200px" class="img-polaroid"></div>
-</center>
-</div>
-<hr/ width='860px'>
-<br><br>
-
-<div class="row-fluid">
-<center>
-  <div class="span3"><img src='tt/9.jpg' class="img-polaroid"></div>
-  <div class="span2"><img src='tt/10.jpg' class="img-polaroid"></div>
-  <div class="span3"><img src='tt/11.jpg' class="img-polaroid"></div>
-  <div class="span2"><h4>猜你喜欢</h4></div>
-  <div class="span2"><h4><a href="caini.html">更多</a></h4></div>
-</center>
-</div>
-<div class="row-fluid">
-<center>
-  <div class="span3">dhfjksdhfsjhffd;f</div>
-  <div class="span2">fjsilfjsljflsjflsjfs</div>
-  <div class="span3">fijsldkjflkdsfjkdlsjf</div>
-  <div class="span2" style="margin-top:-200px"><img src='tt/6.jpg' class="img-polaroid" width="150px" height="200px"></div>
-  <div class="span2" style="margin-top:-230px;margin-left:1150px"><img src='tt/7.jpg' width="150px" height="200px" class="img-polaroid"></div>
-</center>
-</div>
-<br><br><br>
 
 <div class="modal" id="myModal">
                      <div class="modal-header">
@@ -152,8 +140,8 @@ td button{
                    </div>
                 </div>
 
-<script src="static/js/jquery-1.9.1.min.js"></script>
-<script src="static/js/bootstrap.min.js"></script>
+<script src="/static/js/jquery-1.9.1.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 $('#myModal').modal({
     backdrop:true,

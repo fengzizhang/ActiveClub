@@ -9,18 +9,21 @@ from django import forms
 from app.models import *
 import re
 
-
+'''去除注册帐号相同问题'''
 def validate(name):
     users = User.objects.all()
     for user in users:
         if name == user.username:
             raise ValidationError(u'用户名已经存在')
+
+'''规定注册帐号组成'''
 def validator(name):
     pp = re.compile("\w+")
     pa = pp.match(name)
     if pa is None:
         raise ValidationError(u'只能是数字字母下划线')
 
+'''规定注册帐号字数'''
 def activename(name):
     users = User.objects.all()
     if len(name) > 6:
@@ -29,6 +32,7 @@ def activename(name):
         if name == user.first_name:
             raise ValidationError(u'昵称已经存在')
 
+'''注册表单'''
 class UserForm(forms.Form):
     username = forms.CharField(label='用户名', validators=[validate,validator], error_messages={'required':'请输入用户名'})
     first_name = forms.CharField(label='昵称', validators=[activename], error_messages={'required':'请输入昵称'})
@@ -37,6 +41,8 @@ class UserForm(forms.Form):
     email = forms.EmailField(label='邮箱', error_messages={'required':'请输入邮箱地址'})
     headimg = forms.FileField(label='头像', error_messages={'required':'请上传头像'})
 
+
+'''注册'''
 def regist(request):
     if request.method == 'POST':
         uf = UserForm(request.POST,request.FILES)
@@ -52,31 +58,66 @@ def regist(request):
                 user.first_name = first_name
                 user.save()
                 UserProfile.objects.create(headimg=headimg,user=user)
-                return HttpResponseRedirect('/login')
+                return HttpResponseRedirect('/index')    #注册成功跳转到主页
             else:
-                return HttpResponseRedirect('/regist')
+                return HttpResponseRedirect('/regist')   #失败返回注册界面
     else:
         uf = UserForm()
     return render_to_response('regist.html',{'uf':uf})
 
 
-
+'''登录（在公共主页上）'''
 def index_login(request):
+    choices = Choice.objects.all()
+    actives = Active.objects.order_by('-id')
+    hot_actives = Active.objects.order_by('-join_num')[0:3]   #热门活动根据参加的人数的多少来获取，我这里只是在主页显示2个代表一下
+    cai_actives = Active.objects.order_by('-follow_num')[0:3] #猜你喜欢的活动根据关注的人数的多少来获取
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username,password=password)
         if user is not None:
             login(request,user)
-            return HttpResponseRedirect('/home')
+            return HttpResponseRedirect('/home')   #登录成功跳到home界面
         else:
-            return HttpResponseRedirect('/index')
-    return render_to_response('index.html',{})
+            return HttpResponseRedirect('/index')  #登录失败跳到登录主页
 
+    return render_to_response('index.html',{'choices':choices,'actives':actives,'hot_actives':hot_actives,'cai_actives':cai_actives})
+
+
+'''退出'''
 def index_logout(request):
     logout(request)
-    return HttpResponseRedirect('/login')
+    return HttpResponseRedirect('/index')       #退出跳到主页
 
+
+'''登录进去后的主页'''
 def home(request):
     user = request.user
-    return render_to_response('home.html',{'user':user})
+    choices = Choice.objects.all()
+    actives = Active.objects.order_by('-id')
+    hot_actives = Active.objects.order_by('-join_num')[0:3]   #热门活动根据参加的人数的多少来获取，我这里只是在主页显示2个代表一下
+    cai_actives = Active.objects.order_by('-follow_num')[0:3] #猜你喜欢的活动根据关注的人数的多少来获取
+    return render_to_response('home.html',{'user':user,'choices':choices,'actives':actives,'hot_actives':hot_actives,'cai_actives':cai_actives})
+
+'''热门活动'''
+def hot_actives(request):
+    hot_actives = Active.objects.order_by('-join_num')[0:10]
+    return render_to_response('hot_actives.html',{'hot_actives':hot_actives})
+
+'''猜你喜欢活动'''
+def cai_actives(request):
+    cai_actives = Active.objects.order_by('-follow_num')[0:10]
+    return render_to_response('cai_actives.html',{'cai_actives':cai_actives})
+
+'''用户页'''
+def userpage(request):
+    user = request.user
+    return render_to_response('userpage.html',{'user':user})
+
+'''用户信息页'''
+def user_info(request):
+    user = request.user
+
+    return render_to_response('user_info.html',{'user':user})

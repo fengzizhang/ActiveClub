@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 import datetime
 
 class UserProfile(models.Model):
-    user = models.OneToOnesField(User)
+    user = models.OneToOneField(User)
     headimg = models.FileField(upload_to="./uploadfiles")  #用户头像
     latestlogintime = models.DateTimeField(default=datetime.datetime.now())    #最近一次登录时间
 

@@ -2,13 +2,93 @@
 <html>
 <head>
     <title></title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<style>
+body {
+    background-color: #F5F5F5;
+    color: #333333;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    margin: 0;
+}
+
+</style>
+
 </head>
 <body>
-<table>
-<tr><td>用户名</td><td>{{ user.username }}</td></tr>
-<tr><td>昵称</td><td>{{ user.first_name }}</td></tr>
-<tr><td>邮箱</td><td>{{ user.email }}</td></tr>
-<tr><td>头像</td><td><img src="/static/{{}}" width="100px" height="100px"></td></tr>
-</table>
+<div class="navbar navbar-inverse navbar-fixed-top">
+   <div class="navbar-inner">
+     <div class="container">
+       <button class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse" type="button"></button>
+         <a class="brand" href="/home">ActiveClub</a>
+           <div class="nav-collapse collapse">
+              <ul class="nav">
+                  <li class="active"><a href="/home">主页</a></li>
+                  <li><a  data-toggle="modal" href="#myModal" id="dd">关于我</a></li>
+              </ul>
+
+              <form class="navbar-form pull-right">
+               <h4 class="span1" style="color:pink"><a href="/user_info">{{ user.first_name }}</a></h4>
+             <a href="/logout"> <button class="btn">Logout</button></a>
+              <a href="/regist"><button class="btn">SignUp</button></a>
+              </form>
+          </div>
+     </div>
+  </div>
+</div>
+
+
+
+
+<div id="wrap" style="margin-top: 50px">
+      <!-- Begin page content -->
+      <div class="container">
+        <div class="page-header">
+          <h1>My Information</h1>
+        </div>
+       <!--<img src="/static/{{ user.get_profile.headimg }}" width="100px" height="100px" class="img-polaroid"> -->
+
+
+        <p style="font-size: 20px">Headimg : <img src="/static/{{ user.get_profile.headimg }}" width="50px" height="50px" class="img-polaroid"></p><br>
+        <p style="font-size: 20px">Email : {{ user.email }}</p><br>
+        <p style="font-size:20px">Activename : {{ user.first_name   }}</p><br>
+        <p class="lead">Username :  {{ user.username }}</p><br>
+        <a href="/changeinfo" ><button class="btn btn-success">ChangeInfo</button><a>
+      </div>
+
+</div>
+
+
+
+
+
+<div class="modal" id="myModal">
+                     <div class="modal-header">
+                        <a class="close" data-dismiss="modal">×</a>
+                        <h3>对话框标题</h3>
+                      </div>
+                    <div class="modal-body">
+                    <p>对话框内容</p>
+                    </div>
+                   <div class="modal-footer">
+                    <p>谢谢您的支持</p>
+                   </div>
+                </div>
+
+
+
+<script src="/static/js/jquery-1.9.1.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$('#myModal').modal({
+    backdrop:true,
+    keyboard:false,
+    show:true
+    });
+$('#myModal').modal('show')
+$('#myModal').modal('hide')
+
+</script>
 </body>
 </html>

@@ -119,5 +119,35 @@ def userpage(request):
 '''用户信息页'''
 def user_info(request):
     user = request.user
-
     return render_to_response('user_info.html',{'user':user})
+
+
+class ChangeForm(forms.Form):
+    username = forms.CharField(label='用户名', validators=[validate,validator], error_messages={'required':'请输入用户名'})
+    first_name = forms.CharField(label='昵称', validators=[activename], error_messages={'required':'请输入昵称'})
+    password = forms.CharField(label='密码', widget=forms.PasswordInput, error_messages={'required':'请输入密码'})
+    email = forms.EmailField(label='邮箱', error_messages={'required':'请输入邮箱地址'})
+    headimg = forms.FileField(label='头像', error_messages={'required':'请上传头像'})
+
+'''ChangeInfo'''
+def changeinfo(request):
+    user = request.user
+    if request.method == 'POST':
+        cf = ChangeForm(request.POST,request.FILES)
+        if cf.is_valid():
+            username = cf.cleaned_data['username']
+            password = cf.cleaned_data['password']
+            email = cf.cleaned_data['email']
+            headimg = cf.cleaned_data['headimg']
+            first_name = cf.cleaned_data['first_name']
+            user.username = username
+            user.email = email
+            user.first_name = first_name
+            user.set_password(password)
+            user.get_profile().headimg = headimg
+            user.save()
+            user.get_profile().save()
+            return HttpResponseRedirect('/index')    #注册成功跳转到主页
+    else:
+        cf = ChangeForm(initial={'username':user.username,'first_name':user.first_name,'password':user.password,'email':user.email,'headimg':user.get_profile().headimg})
+    return render_to_response('changeinfo.html',{'cf':cf,'user':user})

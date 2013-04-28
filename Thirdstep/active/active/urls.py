@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     url(r'^cai_actives/$','app.views.cai_actives'),
     url(r'^userpage/$','app.views.userpage'),
     url(r'^user_info/$','app.views.user_info'),
+    url(r'^changeinfo/$','app.views.changeinfo'),
+    url(r'^active_info/$','app.views.active_info'),
     # Examples:
     # url(r'^$', 'active.views.home', name='home'),
     # url(r'^active/', include('active.foo.urls')),

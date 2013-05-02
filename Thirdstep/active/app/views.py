@@ -8,6 +8,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django import forms
 from app.models import *
 import re
+from django import http
 
 '''去除注册帐号相同问题'''
 def validate(name):
@@ -58,7 +59,7 @@ def regist(request):
                 user.first_name = first_name
                 user.save()
                 UserProfile.objects.create(headimg=headimg,user=user)
-                return HttpResponseRedirect('/index')    #注册成功跳转到主页
+                return HttpResponseRedirect('/base')    #注册成功跳转到主页
             else:
                 return HttpResponseRedirect('/regist')   #失败返回注册界面
     else:
@@ -79,57 +80,121 @@ def index_login(request):
         user = authenticate(username=username,password=password)
         if user is not None:
             login(request,user)
-            return HttpResponseRedirect('/home')   #登录成功跳到home界面
+            return HttpResponseRedirect('/base')   #登录成功跳到home界面
         else:
-            return HttpResponseRedirect('/index')  #登录失败跳到登录主页
+            return HttpResponseRedirect('/base')  #登录失败跳到登录主页
 
-    return render_to_response('index.html',{'choices':choices,'actives':actives,'hot_actives':hot_actives,'cai_actives':cai_actives})
+    return render_to_response('base.html',{'request':request,'choices':choices,'actives':actives,'hot_actives':hot_actives,'cai_actives':cai_actives})
 
 
 '''退出'''
 def index_logout(request):
     logout(request)
-    return HttpResponseRedirect('/index')       #退出跳到主页
+    return HttpResponseRedirect('/base')       #退出跳到主页
 
 
-'''登录进去后的主页'''
-def home(request):
-    user = request.user
-    choices = Choice.objects.all()
-    actives = Active.objects.order_by('-id')
-    hot_actives = Active.objects.order_by('-join_num')[0:3]   #热门活动根据参加的人数的多少来获取，我这里只是在主页显示2个代表一下
-    cai_actives = Active.objects.order_by('-follow_num')[0:3] #猜你喜欢的活动根据关注的人数的多少来获取
-    return render_to_response('home.html',{'user':user,'choices':choices,'actives':actives,'hot_actives':hot_actives,'cai_actives':cai_actives})
+#'''登录进去后的主页'''
+#def home(request):
+#    user = request.user
+#    choices = Choice.objects.all()
+#    actives = Active.objects.order_by('-id')
+#    hot_actives = Active.objects.order_by('-join_num')[0:3]   #热门活动根据参加的人数的多少来获取，我这里只是在主页显示2个代表一下
+#    cai_actives = Active.objects.order_by('-follow_num')[0:3] #猜你喜欢的活动根据关注的人数的多少来获取
+#    return render_to_response('home.html',{'user':user,'choices':choices,'actives':actives,'hot_actives':hot_actives,'cai_actives':cai_actives})
 
 '''热门活动'''
 def hot_actives(request):
     hot_actives = Active.objects.order_by('-join_num')[0:10]
-    return render_to_response('hot_actives.html',{'hot_actives':hot_actives})
+    return render_to_response('hot_actives.html',{'request':request,'hot_actives':hot_actives})
 
 '''猜你喜欢活动'''
 def cai_actives(request):
     cai_actives = Active.objects.order_by('-follow_num')[0:10]
-    return render_to_response('cai_actives.html',{'cai_actives':cai_actives})
+    return render_to_response('cai_actives.html',{'request':request,'cai_actives':cai_actives})
 
-'''用户页'''
+'''用户页(默认关注的活动页)'''
 def userpage(request):
-    user = request.user
-    return render_to_response('userpage.html',{'user':user})
+    if request.user.is_authenticated():
+    	user = request.user
+    	follow_actives = user.get_profile().follow.all
+    	return render_to_response('userpage.html',{'request':request,'user':user,'follow_actives':follow_actives})
+    else:
+    	return HttpResponseRedirect('/base')	
+
+
+'''用户加入的活动页'''
+def userpage_join(request):
+    if request.user.is_authenticated():
+    	user = request.user
+    	user = request.user
+    	join_actives = user.get_profile().join.all
+    	return render_to_response('userpage_join.html',{'request':request,'user':user,'join_actives':join_actives})
+    else:
+        return HttpResponseRedirect('/base')
+
+'''用户分享的活动页'''
+def userpage_fenxiang(request):
+    if request.user.is_authenticated():
+    	user = request.user
+    	user = request.user
+    	fenxiang_actives = user.get_profile().zhuanfa.all
+    	return render_to_response('userpage_fenxiang.html',{'request':request,'user':user,'fenxiang_actives':fenxiang_actives})
+    else:
+    	return HttpResponseRedirect('/base')
+
+'''用户评论的活动页'''  ###此功能需要修改  重置数据库
+#def userpage_reply(request):
+#    user = request.user
+#    reply_actives = user.get_profile().huifu.all
+#    return render_to_response('userpage_reply.html',{'request':request,'user':user,'reply_actives':reply_actives})
+
+'''用户留念的活动页'''   ###此功能需要改进
+def userpage_liunian(request):
+    if request.user.is_authenticated():
+    	user = request.user
+    	user = request.user
+    	return render_to_response('userpage_liunian.html',{'request':request,'user':user})
+    else:
+    	return HttpResponseRedirect('/base')
 
 '''用户信息页'''
 def user_info(request):
     user = request.user
-    return render_to_response('user_info.html',{'user':user})
+    return render_to_response('user_info.html',{'request':request,'user':user})
 
 
+'''去除修改用户信息相同问题'''
+def validate1(name):
+    users = User.objects.exclude(username=name)
+    for user in users:
+        if name == user.username:
+            raise ValidationError(u'用户名已经存在')
+
+'''规定修改用户信息组成'''
+def validator1(name):
+    pp = re.compile("\w+")
+    pa = pp.match(name)
+    if pa is None:
+        raise ValidationError(u'只能是数字字母下划线')
+
+'''规定修改用户信息字数'''
+def activename1(name):
+    users = User.objects.exclude(first_name=name)
+    if len(name) > 6:
+        raise ValidationError(u'昵称不能超过六个字')
+    for user in users:
+        if name == user.first_name:
+            raise ValidationError(u'昵称已经存在')
+
+'''修改用户信息表单'''
 class ChangeForm(forms.Form):
-    username = forms.CharField(label='用户名', validators=[validate,validator], error_messages={'required':'请输入用户名'})
-    first_name = forms.CharField(label='昵称', validators=[activename], error_messages={'required':'请输入昵称'})
+    username = forms.CharField(label='用户名', validators=[validate1,validator1], error_messages={'required':'请输入用户名'})
+    first_name = forms.CharField(label='昵称', validators=[activename1], error_messages={'required':'请输入昵称'})
     password = forms.CharField(label='密码', widget=forms.PasswordInput, error_messages={'required':'请输入密码'})
     email = forms.EmailField(label='邮箱', error_messages={'required':'请输入邮箱地址'})
     headimg = forms.FileField(label='头像', error_messages={'required':'请上传头像'})
 
-'''ChangeInfo'''
+'''修改用户信息'''
 def changeinfo(request):
     user = request.user
     if request.method == 'POST':
@@ -147,7 +212,90 @@ def changeinfo(request):
             user.get_profile().headimg = headimg
             user.save()
             user.get_profile().save()
-            return HttpResponseRedirect('/index')    #注册成功跳转到主页
+            return HttpResponseRedirect('/base')    #注册成功跳转到主页
     else:
         cf = ChangeForm(initial={'username':user.username,'first_name':user.first_name,'password':user.password,'email':user.email,'headimg':user.get_profile().headimg})
-    return render_to_response('changeinfo.html',{'cf':cf,'user':user})
+    return render_to_response('changeinfo.html',{'request':request,'cf':cf,'user':user})
+
+
+'''活动详情'''
+def active_info(request,aid):
+    user = request.user
+    active = Active.objects.get(id=aid)
+    return render_to_response('active_info.html',{'request':request,'active':active,'user':user})
+
+
+'''活动搜索功能'''
+def active_search(request):
+    hot_actives = Active.objects.order_by('-join_num')[0:3]   #热门活动根据参加的人数的多少来获取，我这里只是在主页显示2个代表一下
+    cai_actives = Active.objects.order_by('-follow_num')[0:3] #猜你喜欢的活动根据关注的人数的多少来获取
+    if request.method == 'POST':
+        active_name = request.POST['active_name']
+        actives = Active.objects.all().filter(title__icontains=active_name)
+    return render_to_response('active_search.html',{'hot_actives':hot_actives,'cai_actives':cai_actives,'request':request,'actives':actives})
+
+'''按主页活动分类搜索'''
+def index_choice_search(request,cid):
+    choice = Choice.objects.get(id=cid)
+    choices = Choice.objects.all()
+    actives = choice.active_set.all
+    return render_to_response('index_choice_search.html',{'request':request,'actives':actives,'choices':choices})
+
+'''活动回复'''
+def active_reply(request):
+    if request.method == 'POST':
+        user = request.user
+    	reply = request.POST['reply']
+        id = request.POST['active_id']
+        active = Active.objects.get(id=id)
+        huifu = Huifu.objects.create(reply=reply,user=user) 
+        active.huifu = huifu
+        active.save()
+        #Reply.objects.create(reply=reply,user=user,active=active)此处需要重置表
+    	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))    
+
+'''参加活动'''
+def join_active(request):
+    if request.method == 'POST':
+    	id = request.POST['id']
+        user = request.user
+        active = Active.objects.get(id=id)
+        user.get_profile().join.add(active)
+        active.join_num += 1
+        active.save() 
+    	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+
+'''取消参加活动'''
+def deljoin_active(request):
+    if request.method == 'POST':
+    	id = request.POST['id']
+        user = request.user
+        active = Active.objects.get(id=id)
+        user.get_profile().join.remove(active) 
+        active.join_num -= 1
+        active.save() 
+    	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+        
+
+'''关注活动'''
+from django import http
+def follow_active(request):
+    if request.method == 'POST':
+    	id = request.POST['id']
+        user = request.user
+        active = Active.objects.get(id=id)
+        user.get_profile().follow.add(active)
+        active.follow_num += 1
+        active.save() 
+    	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+
+'''取消关注活动'''
+def delfollow_active(request):
+    if request.method == 'POST':
+    	id = request.POST['id']
+        user = request.user
+        active = Active.objects.get(id=id)
+        user.get_profile().follow.remove(active) 
+        active.follow_num -= 1
+        active.save() 
+    	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))

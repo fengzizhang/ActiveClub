@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+<link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<style>
+#main{
+   margin: 100px 150px;
+}
+</style>
+{% extends 'base.html' %}
+{% block content %}
+<div class="row-fluid">
+      <div class="span2" style="margin-left: 100px;margin-top: 80px" ><img src="/static/{{ active.active_headimg }}" width="200px" height="250px"></div>
+
+      <div class="span5" style="margin-top: 80px">
+      <h3>{{ active.title }}</h3>
+      活动类型：{{ active.choice }}<br>
+      活动时间：{{ active.date }}<br>
+      活动地点：{{ active.site }}<br>
+      活动费用：{{ active.cost }}<br>
+      已有{{ active.join_num }}人参加<br>
+      已有{{ active.follow_num }}人关注<br><br>
+      
+      {% if active not in user.get_profile.join.all %}     
+     <form method="post" action='/join_active/'>
+       <input type="hidden" value='{{active.id}}' name='id'>
+      <button class="btn" type="submit">加入</button>
+      </form>      
+      {% else %}
+     <form method="post" action='/deljoin_active/'>
+     <button class="btn" type="submit">取消加入</button>
+     <input type="hidden" value='{{active.id}}' name='id'>    
+     </form>
+       {% endif %}     
+
+     
+     {% if active not in user.get_profile.follow.all %}     
+     <form method="post" action='/follow_active/'>
+       <input type="hidden" value='{{active.id}}' name='id'>
+      <button class="btn" type="submit">关注</button>
+      </form>      
+      {% else %}
+     <form method="post" action='/delfollow_active/'>
+     <button class="btn" type="submit">取消关注</button>
+     <input type="hidden" value='{{active.id}}' name='id'>    
+     </form>
+       {% endif %}     
+
+
+<div style="margin-top:80px;margin-left: -230px" >
+ <h3>活动具体情况</h3>
+    {{ active.content }}<br><br>
+<hr>
+<h3>七嘴八舌</h3>
+{{active.huifu.user.username}}&nbsp;>>>&nbsp;{{active.huifu.reply}}  <!--这里有问题-->
+<hr>
+<form method="post" action='/active_reply/'>
+<textarea name="reply" style="width: 300px;height: 150px"></textarea><br>
+<input type='hidden' value='{{active.id}}' name='active_id'>
+<button type="submit" class="btn">发表评论</button>
+</form>
+
+
+
+</div>
+
+
+<div class="modal" id="myModal">
+                     <div class="modal-header">
+                        <a class="close" data-dismiss="modal">×</a>
+                        <h3>对话框标题</h3>
+                      </div>
+                    <div class="modal-body">
+                    <p>对话框内容</p>
+                    </div>
+                   <div class="modal-footer">
+                    <p>谢谢您的支持</p>
+                   </div>
+                </div>
+
+
+
+<script src="/static/js/jquery-1.9.1.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$('#myModal').modal({
+    backdrop:true,
+    keyboard:false,
+    show:true
+    });
+$('#myModal').modal('show')
+$('#myModal').modal('hide')
+
+</script>
+{% endblock %}

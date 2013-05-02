@@ -12,8 +12,7 @@ class UserProfile(models.Model):
     join = models.ManyToManyField('Active', related_name='milestone_join')     #用户参加的活动
     zhuanfa = models.ManyToManyField('Active', related_name='milestone_zhuanfa')#用户转发的活动
 
-    def __unicode__(self):
-        return self.user
+
     	
 
 class Active(models.Model):
@@ -59,7 +58,9 @@ class ActivePhoto(models.Model):
     def __unicode__(self):
         return self.photofile
     
-
-
+class ActiveMedia(models.Model):
+    url = models.URLField(blank=True, null=True) #视频的url
+    m_time = models.DateTimeField(default=datetime.datetime.now())#视频上传时间
+    active = models.ForeignKey(Active)
    
 

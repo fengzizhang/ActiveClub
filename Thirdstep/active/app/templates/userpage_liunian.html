@@ -29,11 +29,12 @@ td button{
 
 </style>
 </head>
-<body>    
-{% extends 'base.html'%}
+<body>
+{% extends 'base.html' %}
 {% block content %}
+
 <div class="row-fluid">
-<h4 style="margin-left:50px">我<span style="color:red">关注</span>的活动</h4><br />
+<h4 style="margin-left:50px">我<span style="color:red">留念</span>的活动</h4><br />
 <center>
   <div class="span2"><h4><a href="/userpage">关注的活动</a></h4></div>
   <div class="span2"><h4><a href="/userpage_join">参加的活动</a></h4></div>
@@ -42,32 +43,9 @@ td button{
   <div class="span3"><h4><a href="/userpage_liunian">参加过得活动留念</a></h4></div>
 </center>
 </div>
-
-     {% for active in follow_actives%}  
-      <div class="span2" style="margin-left: 100px;margin-top:90px" ><img src="/static/{{ active.active_headimg }}" width="200px" height="250px"></div>
-      <div class="span5" style="margin-top: 80px">
-      <h3>{{ active.title }}</h3>
-      活动类型：{{ active.choice }}<br>
-      活动时间：{{ active.date }}<br>
-      活动地点：{{ active.site }}<br>
-      活动费用：{{ active.cost }}<br>
-      已有{{ active.join_num }}人参加<br>
-      已有{{ active.follow_num }}人关注<br>
-      评论条数：{{ active.huifu }}<br />
-     {% if active not in user.get_profile.follow.all %}     
-     <form method="post" action='/follow_active/'>
-       <input type="hidden" value='{{active.id}}' name='id'>
-      <button class="btn" type="submit">关注</button>
-      </form>      
-      {% else %}
-     <form method="post" action='/delfollow_active/'>
-     <button class="btn" type="submit">取消关注</button>
-     <input type="hidden" value='{{active.id}}' name='id'>    
-     </form>
-       {% endif %} 
-       
-     {% endfor %}    
-    </div>
+     
+     
+     
    
 
 <div class="modal" id="myModal">

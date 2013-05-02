@@ -27,59 +27,13 @@
 
 
 </style>
-</head>
-<body>
-<div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <button class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse" type="button"></button>
-            <a class="brand" href="/home">ActiveClub</a>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <li class="active"><a href="/home">主页</a></li>
-                    <li><a  data-toggle="modal" href="#myModal" id="dd">关于我</a></li>
-                </ul>
-
-                <form class="navbar-form pull-right">
-                    <h4 class="span1" style="color:pink"><a href="/user_info">{{ user.first_name }}</a></h4>
-                    <a href="/logout"> <button class="btn">Logout</button></a>
-                    <a href="/regist"><button class="btn">SignUp</button></a>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="hero-unit">
-    <div class="row">
-        <div class="span2"><a href="/home"<img src="/static/Logo/1.gif" ></div>
-        <div class="span6"><h2>Welcome to <span style="color:red"> ActiveClub</span></h2></div>
-        <div class="span4">
-            <table>
-
-                <tr><td><input type="text" placeholder="活动名称、地点、时间"></td>
-                    <td><button class="btn" type="submit">搜索</button></td></tr>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div class="row-fluid">
-    <center><div class="span6"><a href="home.html"><h2>活动页</h2></a></div>
-        <div class="span3"><a href="userpage.html"><h2>用户页</h2></a></div></center>
-</div>
-<hr />
-
+{% extends 'base.html' %}
+{% block content %}
 <h3 style="margin-left: 50px">热门活动</h3>
   <br><br>
   {% for hot_active in hot_actives %}
-     <div class="span4"><img src='/static/{{hot_active.active_headimg}}' class="img-polaroid" width="200px" height="280px"></div>
+     <div class="span2"><a href="/active_info/{{ hot_active.id }}"><img src='/static/{{hot_active.active_headimg}}' class="img-polaroid" width="200px" height="280px"></a>{{hot_active.title}}</div>
   {% endfor %}
-
-
-
-
-
 <div class="modal" id="myModal">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>
@@ -92,9 +46,6 @@
         <p>谢谢您的支持</p>
     </div>
 </div>
-
-
-
 <script src="/static/js/jquery-1.9.1.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
 <script type="text/javascript">
@@ -107,5 +58,4 @@
     $('#myModal').modal('hide')
 
 </script>
-</body>
-</html>
+{% endblock %}

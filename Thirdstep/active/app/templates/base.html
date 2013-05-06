@@ -39,6 +39,7 @@ td button{
               <ul class="nav">
                   <li class="active"><a href="/base">主页</a></li>
                   <li><a  data-toggle="modal" href="#myModal" >关于我</a></li>
+                  <li><a  href="/admin_info" >联系我</a></li>
               </ul>
               {% if request.user.is_authenticated %}
               <div style="margin-left:900px">
@@ -98,12 +99,11 @@ td button{
 <div class="row-fluid">
 <center>
   <div class="span1">时间：</div>
+  <div class="span1"><a href="/base">全部</a></div>
   <div class="span1"><a href="">今天</a></div>
   <div class="span1"><a href="">明天</a></div>
   <div class="span1"><a href="">后天</a></div>
   <div class="span1"><a href="">最近一周</a></div>
-  <div class="span1"><a href="">最近一月</a></div>
-  <div class="span1" >选择日期</div>
 </center>
 </div>
 <hr/ width='860px'>
@@ -131,8 +131,8 @@ td button{
          {% endfor %}
 
 
-         <div class="span8" style="margin-top: 100px"><h4>猜你喜欢</h4></div>
-         <div class="span3" style="margin-top: 100px"><h5><a href="/cai_actives">更多...</a></h5></div>
+         <div class="span7" style="margin-top: 100px"><h4>猜你喜欢</h4></div>
+         <div class="span4" style="margin-top: 100px"><h5><a href="/cai_actives">更多...</a></h5></div>
          {% for cai_active in cai_actives %}
              <div class="span5" style="margin-top: 30px"><a href="/active_info/{{ cai_active.id }}"> <img src='/static/{{cai_active.active_headimg}}' class="img-polaroid" width="100px" height="100px"></a>{{cai_active.title}}</div>
          {% endfor %}
@@ -145,10 +145,10 @@ td button{
 <div class="modal" id="myModal">
                      <div class="modal-header">
                         <a class="close" data-dismiss="modal">×</a>
-                        <h3>对话框标题</h3>
+                        <h3>ActiveClub简介</h3>
                       </div>
                     <div class="modal-body">
-                    <p>对话框内容</p>
+                    <p>这是一个参加活动的平台，在2013.5.7由MrMa指导FengZiZhang开发完成，给喜欢热闹，爱玩，爱生活的你一个空间</p>
                     </div>
                    <div class="modal-footer">
                     <p>谢谢您的支持</p>

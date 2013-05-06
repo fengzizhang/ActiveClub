@@ -37,23 +37,24 @@ td button{
 <center>
   <div class="span2"><h4><a href="/userpage">关注的活动</a></h4></div>
   <div class="span2"><h4><a href="/userpage_join">参加的活动</a></h4></div>
-  <div class="span2"><h4><a href="/userpage_fenxiang">分享的活动</a></h4></div>
+  <!--<div class="span2"><h4><a href="/userpage_fenxiang">分享的活动</a></h4></div>-->
   <div class="span2"><h4><a href="/userpage_reply">评论的活动</a></h4></div>
   <div class="span3"><h4><a href="/userpage_liunian">参加过得活动留念</a></h4></div>
 </center>
 </div>
-
-     {% for active in follow_actives%}  
-      <div class="span2" style="margin-left: 100px;margin-top:90px" ><img src="/static/{{ active.active_headimg }}" width="200px" height="250px"></div>
-      <div class="span5" style="margin-top: 80px">
+<div class="row-fluid" style="margin-top:50px;margin-left:50px">
+     {% for active in follow_actives%}
+      <div class="span4">
+         <div class="span4"><img src="/static/{{ active.active_headimg }}" width="200px" height="250px"></div>
+      <div class="span8">
       <h3>{{ active.title }}</h3>
       活动类型：{{ active.choice }}<br>
-      活动时间：{{ active.date }}<br>
+      活动时间：{{ active.date|date:'Y-m-d h:m' }}<br>
       活动地点：{{ active.site }}<br>
       活动费用：{{ active.cost }}<br>
       已有{{ active.join_num }}人参加<br>
-      已有{{ active.follow_num }}人关注<br>
-      评论条数：{{ active.huifu }}<br />
+      已有{{ active.follow_num }}人关注<br><br>
+     
      {% if active not in user.get_profile.follow.all %}     
      <form method="post" action='/follow_active/'>
        <input type="hidden" value='{{active.id}}' name='id'>
@@ -65,18 +66,17 @@ td button{
      <input type="hidden" value='{{active.id}}' name='id'>    
      </form>
        {% endif %} 
-       
+       </div>
+     </div>  
      {% endfor %}    
-    </div>
-   
-
+</div>
 <div class="modal" id="myModal">
                      <div class="modal-header">
                         <a class="close" data-dismiss="modal">×</a>
-                        <h3>对话框标题</h3>
+                        <h3>ActiveClub简介</h3>
                       </div>
                     <div class="modal-body">
-                    <p>对话框内容</p>
+                    <p>这是一个参加活动的平台，在2013.5.7由MrMa指导FengZiZhang开发完成，给喜欢热闹，爱玩，爱生活的你一个空间</p>
                     </div>
                    <div class="modal-footer">
                     <p>谢谢您的支持</p>                            

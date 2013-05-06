@@ -9,6 +9,10 @@ from django import forms
 from app.models import *
 import re
 from django import http
+import datetime,time
+
+def admin_info(request):
+    return render_to_response('admin_info.html',{'request':request})
 
 '''去除注册帐号相同问题'''
 def validate(name):
@@ -126,7 +130,6 @@ def userpage(request):
 def userpage_join(request):
     if request.user.is_authenticated():
     	user = request.user
-    	user = request.user
     	join_actives = user.get_profile().join.all
     	return render_to_response('userpage_join.html',{'request':request,'user':user,'join_actives':join_actives})
     else:
@@ -136,27 +139,48 @@ def userpage_join(request):
 def userpage_fenxiang(request):
     if request.user.is_authenticated():
     	user = request.user
-    	user = request.user
     	fenxiang_actives = user.get_profile().zhuanfa.all
     	return render_to_response('userpage_fenxiang.html',{'request':request,'user':user,'fenxiang_actives':fenxiang_actives})
     else:
     	return HttpResponseRedirect('/base')
 
 '''用户评论的活动页'''  ###此功能需要修改  重置数据库
-#def userpage_reply(request):
-#    user = request.user
-#    reply_actives = user.get_profile().huifu.all
-#    return render_to_response('userpage_reply.html',{'request':request,'user':user,'reply_actives':reply_actives})
+def userpage_reply(request):
+    user = request.user
+    huifus = Huifu.objects.filter(user=user)
+    
+    return render_to_response('userpage_reply.html',{'request':request,'user':user,'huifus':huifus})
 
 '''用户留念的活动页'''   ###此功能需要改进
 def userpage_liunian(request):
     if request.user.is_authenticated():
-    	user = request.user
-    	user = request.user
-    	return render_to_response('userpage_liunian.html',{'request':request,'user':user})
+    	join_actives = request.user.get_profile().join.all
+    	return render_to_response('userpage_liunian.html',{'join_actives':join_actives,'request':request})
     else:
     	return HttpResponseRedirect('/base')
 
+'''活动留念照片'''
+def active_liunian(request,aid):
+    active = Active.objects.get(id=aid)
+    activemedias = active.activemedia_set.all()
+    active_photos = active.activephoto_set.all()
+    return render_to_response('active_liunian.html',{'active_photos':active_photos,'activemedias':activemedias,'request':request,'active':active})
+def active_liunian1(request,aid):
+    if request.method == 'POST':
+        active = Active.objects.get(id=aid)
+    	user = request.user
+    	img = request.FILES.get('img')
+    	ActivePhoto.objects.create(photofile=img,user=user,active=active)
+    return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))    
+'''活动留念视频'''
+def active_liunian2(request):
+    if request.method == 'POST':
+    	id = request.POST['aid']
+        active = Active.objects.get(id=id)
+        url = request.POST['url']
+        user = request.user
+        ActiveMedia(url=url,active=active).save()
+    return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))    
 '''用户信息页'''
 def user_info(request):
     user = request.user
@@ -222,6 +246,10 @@ def changeinfo(request):
 def active_info(request,aid):
     user = request.user
     active = Active.objects.get(id=aid)
+    
+    #if request.method == 'POST':
+    #	reply = request.POST['reply']
+    #    Huifu.objects.create(reply=reply,user=user,active=active)
     return render_to_response('active_info.html',{'request':request,'active':active,'user':user})
 
 
@@ -235,11 +263,27 @@ def active_search(request):
     return render_to_response('active_search.html',{'hot_actives':hot_actives,'cai_actives':cai_actives,'request':request,'actives':actives})
 
 '''按主页活动分类搜索'''
-def index_choice_search(request,cid):
+def index_choice_search(request,cid,time=None):
+    today = datetime.date.today()
+    print today
+    tomorrow = today + datetime.timedelta(days=1)
+    houtian = today + datetime.timedelta(days=2)
+    week = today + datetime.timedelta(days=7)
     choice = Choice.objects.get(id=cid)
     choices = Choice.objects.all()
-    actives = choice.active_set.all
-    return render_to_response('index_choice_search.html',{'request':request,'actives':actives,'choices':choices})
+    if time:
+        if time == week:
+            today = today.strftime("%Y-%m-%d")
+            actives = choice.active_set.filter(date_gta=today) and choice.active_set.filter(date_lte=time)
+            
+    	else:
+            pass
+             #date_joined__monthx=datetime.datetime.now().month, date_joined__day=datetime.datetime.now().day 
+            #actives = choice.active_set.filter(date_gta=time) and choice.active_set.filter(date_lte=time1)
+            
+    else:
+	actives = choice.active_set.all()
+    return render_to_response('index_choice_search.html',{'request':request,'actives':actives,'choices':choices,'cid':cid,'today':today,'tomorrow':tomorrow,'houtian':houtian,'week':week})
 
 '''活动回复'''
 def active_reply(request):
@@ -248,9 +292,8 @@ def active_reply(request):
     	reply = request.POST['reply']
         id = request.POST['active_id']
         active = Active.objects.get(id=id)
-        huifu = Huifu.objects.create(reply=reply,user=user) 
-        active.huifu = huifu
-        active.save()
+        huifu = Huifu.objects.create(reply=reply,user=user,active=active) 
+ 
         #Reply.objects.create(reply=reply,user=user,active=active)此处需要重置表
     	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))    
 
@@ -261,6 +304,7 @@ def join_active(request):
         user = request.user
         active = Active.objects.get(id=id)
         user.get_profile().join.add(active)
+        active.user_join.add(user)
         active.join_num += 1
         active.save() 
     	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
@@ -272,6 +316,7 @@ def deljoin_active(request):
         user = request.user
         active = Active.objects.get(id=id)
         user.get_profile().join.remove(active) 
+        active.user_join.remove(user)
         active.join_num -= 1
         active.save() 
     	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
@@ -285,6 +330,7 @@ def follow_active(request):
         user = request.user
         active = Active.objects.get(id=id)
         user.get_profile().follow.add(active)
+        active.user_follow.add(user)
         active.follow_num += 1
         active.save() 
     	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
@@ -296,6 +342,22 @@ def delfollow_active(request):
         user = request.user
         active = Active.objects.get(id=id)
         user.get_profile().follow.remove(active) 
+	active.user_follow.remove(user)
         active.follow_num -= 1
         active.save() 
     	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+
+
+'''活动参加的用户列表'''
+def join_user(request,jid):
+    active = Active.objects.get(id=jid)
+    users = active.user_join.all
+    return render_to_response('join_user.html',{'request':request,'active':active,'users':users})
+
+
+
+'''活动关注的用户列表'''
+def follow_user(request,fid):
+    active = Active.objects.get(id=fid)
+    users = active.user_follow.all()
+    return render_to_response('follow_user.html',{'request':request,'active':active,'users':users})

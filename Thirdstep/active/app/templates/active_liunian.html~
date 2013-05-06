@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title></title>
+	<link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<style>
+.hero-unit{margin-top: 43px;padding: 1px;height: 50px}
+.span4 input[type='text']
+{
+    font-size: 16px;
+    height: auto;
+    margin-bottom: 15px;
+    padding: 7px 9px;
+}
+
+td button{
+   margin-top: -20px;
+}
+
+.row-fluid .span6:hover{
+    color: red;
+}
+.row-fluid .span3:hover{
+    color: red;
+}
+
+
+</style>
+</head>
+<body>
+{% extends 'base.html' %}
+{% block content %}  
+
+      <div class="span2" style="margin-left: 100px;margin-top:90px" ><img src="/static/{{ active.active_headimg }}" width="200px" height="250px"></div>
+      <div class="span5" style="margin-top: 80px">
+      <h3>{{ active.title }}</h3>
+      活动类型：{{ active.choice }}<br>
+      活动时间：{{ active.date|date:'Y-m-d' }}<br>
+      活动地点：{{ active.site }}<br>
+      活动费用：{{ active.cost }}<br>
+      已有{{ active.join_num }}人参加<br>
+      已有{{ active.follow_num }}人关注<br><br>     
+      <form action="/active_liunian2/" method="post">
+      <input type="hidden" value="{{active.id}}" name="aid">
+      <input type="text" name="url" style="width:282px;height:20px;">
+      <button class="btn" type="submit" style="margin-top:-8px">上传视频</button>	
+      </form>
+      <form method="post" enctype="multipart/form-data" action="/active_liunian1/{{active.id}}">     
+      <input type="file" name="img">
+      <input class="btn" type="submit" name="activephoto" value="上传照片"/><br />
+      </form>
+     
+      </div>
+<!--<div style="margin-top:400px;margin-left:100px;width:550px;border:1px solid black;" >-->
+<div class="row-fluid">
+    <div class="span5" style="margin-left:90px">
+      <h3 style="width:150px;">活动照片</h3><br />
+      {% for active_photo in active_photos %}
+      <img src="/static/{{active_photo.photofile}}">
+      {% endfor %}
+    </div>
+     
+<!--<div style="margin-top:-62px;margin-left:700px;width:550px;border:1px solid black;">-->
+    <div class="span5">  
+	<h3 style="width:200px;">活动视频</h3>
+      {% for activemedia in activemedias %}
+       <embed src="{{activemedia.url}}" width="500px" height="450px" ></embed><br /><br />
+      {% endfor %}
+    </div>    
+</div>
+<div class="modal" id="myModal">
+                     <div class="modal-header">
+                        <a class="close" data-dismiss="modal">×</a>
+                        <h3>ActiveClub简介</h3>
+                      </div>
+                    <div class="modal-body">
+                    <p>这是一个参加活动的平台，在2013.5.7由MrMa指导FengZiZhang开发完成，给喜欢热闹，爱玩，爱生活的你一个空间</p>
+                    </div>
+                   <div class="modal-footer">
+                    <p>谢谢您的支持</p>                            
+                   </div>
+                </div>
+<script src="/static/js/jquery-1.9.1.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$('#myModal').modal({
+    backdrop:true,
+    keyboard:false,
+    show:true
+    });
+$('#myModal').modal('show')
+$('#myModal').modal('hide')
+
+</script>
+{% endblock %}
+</body>
+</html>

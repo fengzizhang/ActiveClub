@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+<link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<style>
+#main{
+   margin: 100px 150px;
+}
+</style>
+{% extends 'base.html' %}
+{% block content %}
+<div class="row-fluid">
+      <div class="span2" style="margin-left: 100px;margin-top: 80px" ><img src="/static/{{ active.active_headimg }}" width="200px" height="250px"></div>
+
+      <div class="span5" style="margin-top: 80px">
+      <h3>{{ active.title }}</h3>
+      活动类型：{{ active.choice }}<br>
+      活动时间：{{ active.date|date:"Y-m-d h:m" }}<br>
+      活动地点：{{ active.site }}<br>
+      活动费用：{{ active.cost }}<br>
+      已有<a href="/join_user/{{active.id}}">{{ active.join_num }}</a>人参加<br>
+      已有<a href="/follow_user/{{active.id}}">{{ active.follow_num }}</a>人关注<br><br>
+      
+      {% if active not in request.user.get_profile.join.all or not request.user.is_authenticated %}     
+     <form method="post" action='/join_active/'>
+       <input type="hidden" value='{{active.id}}' name='id'>
+            {% if request.user.is_authenticated %}
+      <button class="btn" type="submit">加入</button>
+      
+            {% else %}
+       <a href="/base"><button class="btn">加入</button></a>
+            {% endif %}
+        </form>    
+      {% else %}
+     <form method="post" action='/deljoin_active/'>
+     <button class="btn" type="submit">取消加入</button>
+     <input type="hidden" value='{{active.id}}' name='id'>    
+     </form>
+      {% endif %}     
+
+     
+     {% if active not in request.user.get_profile.follow.all or not request.user.is_authenticated %}     
+     <form method="post" action='/follow_active/'>
+       <input type="hidden" value='{{active.id}}' name='id'>
+          {% if request.user.is_authenticated %}
+      <button class="btn" type="submit">关注</button>
+          {% else %}
+      <a href="/base"><button class="btn">关注</button></a>
+          {% endif %}
+      </form>      
+      {% else %}
+     <form method="post" action='/delfollow_active/'>
+     <button class="btn" type="submit">取消关注</button>
+     <input type="hidden" value='{{active.id}}' name='id'>    
+     </form>
+       {% endif %}     
+
+
+<div style="margin-top:80px;margin-left: -230px;margin-bottom:50px" >
+ <h3>参加活动用户列表</h3>
+   {% for user in users %}
+     {{user.username}}<img src="/static/{{user.get_profile.headimg}}" width="50px" height="50px">&nbsp;&nbsp;
+   {% endfor %}
+</div>  
+
+<div class="modal" id="myModal">
+                     <div class="modal-header">
+                        <a class="close" data-dismiss="modal">×</a>
+                        <h3>ActiveClub简介</h3>
+                      </div>
+                    <div class="modal-body">
+                    <p>这是一个参加活动的平台，在2013.5.7由MrMa指导FengZiZhang开发完成，给喜欢热闹，爱玩，爱生活的你一个空间</p>
+                    </div>
+                   <div class="modal-footer">
+                    <p>谢谢您的支持</p>
+                   </div>
+                </div>
+
+
+
+<script src="/static/js/jquery-1.9.1.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$('#myModal').modal({
+    backdrop:true,
+    keyboard:false,
+    show:true
+    });
+$('#myModal').modal('show')
+$('#myModal').modal('hide')
+
+</script>
+{% endblock %}

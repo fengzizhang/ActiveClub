@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<style>
+body {
+    background-color: #F5F5F5;
+    color: #333333;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    margin: 0;
+}
+
+</style>
+
+</head>
+<body>
+{% extends 'base.html' %}
+{% block content %}
+
+<div id="wrap" style="margin-top: 50px">
+      <!-- Begin page content -->
+      <div class="container">
+        <div class="page-header">
+          <h1>Admin Information</h1>
+        </div>
+       <!--<img src="/static/{{ user.get_profile.headimg }}" width="100px" height="100px" class="img-polaroid"> -->
+
+
+        <p style="font-size: 20px">Admin_Name :  Fengzizhang</p><br>
+        <p style="font-size: 20px">Admin_Email : zhangchuan888@gmail.com</p><br>
+        <p style="font-size:20px">Admin_Phone : 15033717089</p><br> 
+        <h4 style="text-align:right">If you want to publish active , please call me or send email, thank you!</h4>          
+      </div>
+
+</div>
+
+
+<div class="modal" id="myModal">
+                     <div class="modal-header">
+                        <a class="close" data-dismiss="modal">×</a>
+                        <h3>ActiveClub简介</h3>
+                      </div>
+                    <div class="modal-body">
+                    <p>这是一个参加活动的平台，在2013.5.7由MrMa指导FengZiZhang开发完成，给喜欢热闹，爱玩，爱生活的你一个空间</p>
+                    </div>
+                   <div class="modal-footer">
+                    <p>谢谢您的支持</p>
+                   </div>
+                </div>
+
+
+
+<script src="/static/js/jquery-1.9.1.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$('#myModal').modal({
+    backdrop:true,
+    keyboard:false,
+    show:true
+    });
+$('#myModal').modal('show')
+$('#myModal').modal('hide')
+
+</script>
+{% endblock %}
+</body>
+</html>

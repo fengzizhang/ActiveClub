@@ -28,48 +28,8 @@
 
     </style>
 </head>
-<body>
-<div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <button class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse" type="button"></button>
-            <a class="brand" href="/">ActiveClub</a>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <li class="active"><a href="/">主页</a></li>
-                    <li><a  data-toggle="modal" href="#myModal" id="dd">关于我</a></li>
-                </ul>
-
-                <form class="navbar-form pull-right">
-                    <h4 class="span1" style="color:pink"><a href="/user_info">{{ user.first_name }}</a></h4>
-                    <a href="/logout"> <button class="btn">Logout</button></a>
-                    <a href="regist1.html"><button class="btn">SignUp</button></a>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="hero-unit">
-    <div class="row">
-        <div class="span2"><img src="/static/Logo/1.gif" ></div>
-        <div class="span6"><h2>Welcome to <span style="color:red"> ActiveClub</span></h2></div>
-        <div class="span4">
-            <table>
-
-                <tr><td><input type="text" placeholder="活动名称、地点、时间"></td>
-                    <td><button class="btn" type="submit">搜索</button></td></tr>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div class="row-fluid">
-    <center><div class="span6"><a href="/home"><h2>活动页</h2></a></div>
-        <div class="span3"><a href="/userpage"><h2>用户页</h2></a></div></center>
-</div>
-<hr />
-
+{% extends 'base.html' %}
+{% block content %}
 <h3 style="margin-left: 50px">猜你喜欢活动</h3>
 <br><br>
 {% for cai_active in cai_actives %}
@@ -83,10 +43,10 @@
 <div class="modal" id="myModal">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>
-        <h3>对话框标题</h3>
+        <h3>ActiveClub简介</h3>
     </div>
     <div class="modal-body">
-        <p>对话框内容</p>
+        <p>这是一个参加活动的平台，在2013.5.7由MrMa指导FengZiZhang开发完成，给喜欢热闹，爱玩，爱生活的你一个空间</p>
     </div>
     <div class="modal-footer">
         <p>谢谢您的支持</p>
@@ -107,5 +67,4 @@
     $('#myModal').modal('hide')
 
 </script>
-</body>
-</html>
+{% endblock %}

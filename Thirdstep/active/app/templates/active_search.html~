@@ -32,10 +32,14 @@ td button{
 {% block content%}
 <div class="span9" style="margin-left:10px">
             <div class="row-fluid">
+            {% if not actives %}
+            <h3 style="text-align:center">没有符合要求的活动</h3>
+            {% else %} 
                 {% for active in actives %}
                     <div class="span2"><a href="/active_info/{{ active.id }}"><img src='/static/{{ active.active_headimg }}' class="img-polaroid" width="150px" height="150px"></a>{{active.title}}</div>
 
                 {% endfor %}
+            {% endif %}            
             </div>
  </div>
 
@@ -51,7 +55,7 @@ td button{
             <div class="span8" style="margin-top: 100px"><h4>猜你喜欢</h4></div>
             <div class="span3"><h5><a href="/cai_actives">更多...</a></h5></div>
             {% for cai_active in cai_actives %}
-                <div class="span5" style="margin-top: 30px"><a href="/active_info/{{ cai_active.id }}"><img src='/static/{{cai_active.active_headimg}}' class="img-polaroid" width="100px" height="100px">{{cai_active.titles}}</a></div>
+                <div class="span5" style="margin-top: 30px"><a href="/active_info/{{ cai_active.id }}"><img src='/static/{{cai_active.active_headimg}}' class="img-polaroid" width="100px" height="100px">{{cai_active.title}}</a></div>
             {% endfor %}
 			
         </div>
@@ -61,10 +65,10 @@ td button{
 <div class="modal" id="myModal">
                      <div class="modal-header">
                         <a class="close" data-dismiss="modal">×</a>
-                        <h3>对话框标题</h3>
+                        <h3>ActiveClub简介</h3>
                       </div>
                     <div class="modal-body">
-                    <p>对话框内容</p>
+                    <p>这是一个参加活动的平台，在2013.5.7由MrMa指导FengZiZhang开发完成，给喜欢热闹，爱玩，爱生活的你一个空间</p>
                     </div>
                    <div class="modal-footer">
                     <p>谢谢您的支持</p>                            

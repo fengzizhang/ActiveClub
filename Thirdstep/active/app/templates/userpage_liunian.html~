@@ -43,11 +43,12 @@ td button{
   <div class="span3"><h4><a href="/userpage_liunian">参加过得活动留念</a></h4></div>
 </center>
 </div>
-<div>
-{% for active in join_actives%}  
 
-      <div class="span2" style="margin-left: 100px;margin-top:90px" ><img src="/static/{{ active.active_headimg }}" width="200px" height="250px"></div>
-      <div class="span5" style="margin-top: 90px">
+<div style="margin-top:50px">
+{% for active in join_actives%}  
+<div class="span6">
+      <div class="span4" ><img src="/static/{{ active.active_headimg }}" width="200px" height="250px"></div>
+      <div class="span2">
       <h3>{{ active.title }}</h3>
       活动类型：{{ active.choice }}<br>
       活动时间：{{ active.date|date:'Y-m-d' }}<br>
@@ -58,10 +59,10 @@ td button{
       <a href="/active_liunian/{{active.id}}"> <h4>查看留念</h4> </a>   
       </div>
     
-      
-{% endfor %}
-</div>     
-     
+    </div>  
+{% endfor %} 
+ 
+  </div>   
 <div class="modal" id="myModal">
                      <div class="modal-header">
                         <a class="close" data-dismiss="modal">×</a>

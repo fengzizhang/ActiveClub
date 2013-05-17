@@ -21,7 +21,7 @@
       活动费用：{{ active.cost }}<br>
       已有<a href="/join_user/{{active.id}}">{{ active.join_num }}</a>人参加<br>
       已有<a href="/follow_user/{{active.id}}">{{ active.follow_num }}</a>人关注<br><br>
-      
+      {% if active in activess %}
       {% if active not in user.get_profile.join.all or not request.user.is_authenticated %}     
      <form method="post" action='/join_active/'>
        <input type="hidden" value='{{active.id}}' name='id'>
@@ -39,7 +39,8 @@
      </form>
       {% endif %}     
 
-     
+      {% else %}
+       {% endif %}
      {% if active not in user.get_profile.follow.all or not request.user.is_authenticated %}     
      <form method="post" action='/follow_active/'>
        <input type="hidden" value='{{active.id}}' name='id'>
@@ -55,7 +56,7 @@
      <input type="hidden" value='{{active.id}}' name='id'>    
      </form>
        {% endif %}     
-
+    
 
 <div style="margin-top:80px;margin-left: -230px" >
  <h3>活动具体情况</h3>

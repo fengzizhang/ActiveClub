@@ -84,7 +84,7 @@ td button{
      {% for huifu in huifus %}  
     <div class="span6">
       <div class="span4"><img src="/static/{{ huifu.active.active_headimg }}" width="200px" height="250px"></div>
-      <div class="span8" >
+      <div class="span2" >
       <h3>{{ huifu.active.title }}</h3><br>
       活动类型：{{ huifu.active.choice }}<br>
       活动时间：{{ huifu.active.date }}<br>

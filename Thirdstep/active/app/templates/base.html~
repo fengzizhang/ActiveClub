@@ -5,6 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title></title>
 	<link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="/static/css/datepicker.css" rel="stylesheet" media="screen">	
 <style>
 .hero-unit{margin-top: 43px;padding: 1px;height: 50px}
 .span4 input[type='text']
@@ -49,10 +50,10 @@ td button{
               </div>                             
                {% else %}             
               <form class="navbar-form pull-right" method="post" action="/base/">
-              <input class="span2" type="text"  name="username">
-              <input class="span2" type="password" name="password">
+              <input class="span2" type="text"  name="username" placeholder="用户名">
+              <input class="span2" type="password" name="password" placeholder="密码">
               <button class="btn" type="submit">SignIn</button>
-              <a href="/regist"><button class="btn">SignUp</button></a>
+              <a href="/regist"><input class="btn" value='SignUp' type="button"></a>
               </form>
                            
               {% endif %}
@@ -67,7 +68,7 @@ td button{
        <div class="span4">
         <table>
        	     <form action="/active_search/" method="post">
-       		<tr><td><input type="text" placeholder="活动名称、地点、时间" name='active_name'></td>
+       		<tr><td><input type="text" placeholder="活动名称、地点、时间、费用" name='active_name'></td>
        		<td><button class="btn" type="submit">搜索</button></td></tr>
              </form>
         </table>
@@ -104,6 +105,9 @@ td button{
   <div class="span1"><a href="">明天</a></div>
   <div class="span1"><a href="">后天</a></div>
   <div class="span1"><a href="">最近一周</a></div>
+     
+
+  </div>
 </center>
 </div>
 <hr/ width='860px'>
@@ -131,8 +135,8 @@ td button{
          {% endfor %}
 
 
-         <div class="span8" style="margin-top: 100px"><h4>猜你喜欢</h4></div>
-         <div class="span3" style="margin-top: 100px"><h5><a href="/cai_actives">更多...</a></h5></div>
+         <div class="span7" style="margin-top: 100px"><h4>猜你喜欢</h4></div>
+         <div class="span4" style="margin-top: 100px"><h5><a href="/cai_actives">更多...</a></h5></div>
          {% for cai_active in cai_actives %}
              <div class="span5" style="margin-top: 30px"><a href="/active_info/{{ cai_active.id }}"> <img src='/static/{{cai_active.active_headimg}}' class="img-polaroid" width="100px" height="100px"></a>{{cai_active.title}}</div>
          {% endfor %}
@@ -155,8 +159,11 @@ td button{
                    </div>
                 </div>
 
+
+
 <script src="/static/js/jquery-1.9.1.min.js"></script>
 <script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/bootstrap-datepicker.js" ></script>
 <script type="text/javascript">
 $('#myModal').modal({
     backdrop:true,
@@ -165,6 +172,8 @@ $('#myModal').modal({
     });
 $('#myModal').modal('show')
 $('#myModal').modal('hide')
+
+
 </script>
 {% endblock %}
 </body>

@@ -36,7 +36,7 @@ td button{
             <h3 style="text-align:center;color:red">没有符合要求的活动</h3>
             {% else %} 
                 {% for active in actives %}
-                    <div class="span2"><a href="/active_info/{{ active.id }}"><img src='/static/{{ active.active_headimg }}' class="img-polaroid" width="150px" height="150px"></a>{{active.title}}</div>
+                    <div class="span2" ><a href="/active_info/{{ active.id }}"><img src='/static/{{ active.active_headimg }}' class="img-polaroid" width="150px" height="150px"></a>{{active.title}}</div>
 
                 {% endfor %}
             {% endif %}            
@@ -45,17 +45,17 @@ td button{
 
         <div class="span3">
            <div class="span2"><h4>热门活动</h4></div>
-            <div class="span6"><h5><a href="/hot_actives">更多...</a></h5></div>
+            <div class="span3"><h5><a href="/hot_actives">更多...</a></h5></div>
             {% for hot_active in hot_actives %}
-                <div class="span5" style="margin-top: 30px"><a href="/active_info/{{ hot_active.id }}"><img src='/static/{{hot_active.active_headimg}}' class="img-polaroid" width="100px" height="100px">{{hot_active.title}}</a></div>
+                <div class="span3" style="margin-top: 30px"><a href="/active_info/{{ hot_active.id }}"><img src='/static/{{hot_active.active_headimg}}' class="img-polaroid" width="100px" height="100px">{{hot_active.title}}</a></div>
 
             {% endfor %}
 
 
-            <div class="span8" style="margin-top: 100px"><h4>猜你喜欢</h4></div>
+            <div class="span2" style="margin-top: 100px"><h4>猜你喜欢</h4></div>
             <div class="span3"><h5><a href="/cai_actives">更多...</a></h5></div>
             {% for cai_active in cai_actives %}
-                <div class="span5" style="margin-top: 30px"><a href="/active_info/{{ cai_active.id }}"><img src='/static/{{cai_active.active_headimg}}' class="img-polaroid" width="100px" height="100px">{{cai_active.title}}</a></div>
+                <div class="span3" style="margin-top: 30px"><a href="/active_info/{{ cai_active.id }}"><img src='/static/{{cai_active.active_headimg}}' class="img-polaroid" width="100px" height="100px">{{cai_active.title}}</a></div>
             {% endfor %}
 			
         </div>

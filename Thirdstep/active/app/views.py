@@ -128,10 +128,12 @@ def userpage(request):
 
 '''用户加入的活动页'''
 def userpage_join(request):
+    today = datetime.datetime.now()
+    activess = Active.objects.filter(date__gte = today) 
     if request.user.is_authenticated():
     	user = request.user
     	join_actives = user.get_profile().join.all
-    	return render_to_response('userpage_join.html',{'request':request,'user':user,'join_actives':join_actives})
+    	return render_to_response('userpage_join.html',{'request':request,'user':user,'join_actives':join_actives,'activess':activess})
     else:
         return HttpResponseRedirect('/base')
 
@@ -246,11 +248,13 @@ def changeinfo(request):
 def active_info(request,aid):
     user = request.user
     active = Active.objects.get(id=aid)
-    
+    today = datetime.datetime.now()
+    activess = Active.objects.filter(date__gte = today) 
+    print activess
     #if request.method == 'POST':
     #	reply = request.POST['reply']
     #    Huifu.objects.create(reply=reply,user=user,active=active)
-    return render_to_response('active_info.html',{'request':request,'active':active,'user':user})
+    return render_to_response('active_info.html',{'request':request,'active':active,'activess':activess,'user':user})
 
 
 '''活动搜索功能'''
@@ -259,25 +263,26 @@ def active_search(request):
     cai_actives = Active.objects.order_by('-follow_num')[0:3] #猜你喜欢的活动根据关注的人数的多少来获取
     if request.method == 'POST':
         active_name = request.POST['active_name']
-        actives = Active.objects.all().filter(title__icontains=active_name)
+        actives = Active.objects.all().filter(title__icontains=active_name) or Active.objects.all().filter(site__icontains=active_name) or Active.objects.all().filter(cost__icontains=active_name) 
     return render_to_response('active_search.html',{'hot_actives':hot_actives,'cai_actives':cai_actives,'request':request,'actives':actives})
 
 '''按主页活动分类搜索'''
 def index_choice_search(request,cid,time=None):
     today = datetime.date.today()
-    print today
     tomorrow = today + datetime.timedelta(days=1)
     houtian = today + datetime.timedelta(days=2)
+    houtiam1 = today + datetime.timedelta(days=3)
+    houtiam2 = today + datetime.timedelta(days=4)
+    houtiam3 = today + datetime.timedelta(days=5)
     week = today + datetime.timedelta(days=7)
+
     choice = Choice.objects.get(id=cid)
     choices = Choice.objects.all()
     if time:
         if time == week:
-            today = today.strftime("%Y-%m-%d")
-            actives = choice.active_set.filter(date_gta=today) and choice.active_set.filter(date_lte=time)
-            
-    	else:
-            pass
+            actives = choice.active_set.all().filter(date__icontains=time) or choice.active_set.all().filter(date__icontains=today) or choice.active_set.all().filter(date__icontains=tomorrow) or choice.active_set.all().filter(date__icontains=houtian) or choice.active_set.all().filter(date__icontains=hutian1) or choice.active_set.all().filter(date__icontains=hutian2) or choice.active_set.all().filter(date__icontains=hutian3) 
+        else:
+            actives = choice.active_set.all().filter(date__icontains=time)    
              #date_joined__monthx=datetime.datetime.now().month, date_joined__day=datetime.datetime.now().day 
             #actives = choice.active_set.filter(date_gta=time) and choice.active_set.filter(date_lte=time1)
             
@@ -285,67 +290,84 @@ def index_choice_search(request,cid,time=None):
 	actives = choice.active_set.all()
     return render_to_response('index_choice_search.html',{'request':request,'actives':actives,'choices':choices,'cid':cid,'today':today,'tomorrow':tomorrow,'houtian':houtian,'week':week})
 
+
+
 '''活动回复'''
 def active_reply(request):
-    if request.method == 'POST':
-        user = request.user
-    	reply = request.POST['reply']
-        id = request.POST['active_id']
-        active = Active.objects.get(id=id)
-        huifu = Huifu.objects.create(reply=reply,user=user,active=active) 
+    if request.user.is_authenticated(): 
+        if request.method == 'POST':
+            user = request.user
+            reply = request.POST['reply']
+            id = request.POST['active_id']
+            active = Active.objects.get(id=id)
+            huifu = Huifu.objects.create(reply=reply,user=user,active=active) 
  
         #Reply.objects.create(reply=reply,user=user,active=active)此处需要重置表
-    	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))    
+    	    return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))    
+    else:
+        return HttpResponseRedirect('/base')
 
 '''参加活动'''
 def join_active(request):
-    if request.method == 'POST':
-    	id = request.POST['id']
-        user = request.user
-        active = Active.objects.get(id=id)
-        user.get_profile().join.add(active)
-        active.user_join.add(user)
-        active.join_num += 1
-        active.save() 
-    	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+    if request.user.is_authenticated(): 
+        if request.method == 'POST':
+            id = request.POST['id']
+            user = request.user
+            active = Active.objects.get(id=id)
+            user.get_profile().join.add(active)
+            active.user_join.add(user)
+            active.join_num += 1
+            active.save() 
+    	    return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+    else:
+        return HttpResponseRedirect('/base')
 
 '''取消参加活动'''
 def deljoin_active(request):
-    if request.method == 'POST':
-    	id = request.POST['id']
-        user = request.user
-        active = Active.objects.get(id=id)
-        user.get_profile().join.remove(active) 
-        active.user_join.remove(user)
-        active.join_num -= 1
-        active.save() 
-    	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+    if request.user.is_authenticated(): 
+        if request.method == 'POST':
+            id = request.POST['id']
+            user = request.user
+            active = Active.objects.get(id=id)
+            user.get_profile().join.remove(active) 
+            active.user_join.remove(user)
+            active.join_num -= 1
+            active.save() 
+    	    return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+    else:
+        return HttpResponseRedirect('/base')
         
 
 '''关注活动'''
 from django import http
 def follow_active(request):
-    if request.method == 'POST':
-    	id = request.POST['id']
-        user = request.user
-        active = Active.objects.get(id=id)
-        user.get_profile().follow.add(active)
-        active.user_follow.add(user)
-        active.follow_num += 1
-        active.save() 
-    	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+    if request.user.is_authenticated(): 
+        if request.method == 'POST':
+            id = request.POST['id']
+            user = request.user
+            active = Active.objects.get(id=id)
+            user.get_profile().follow.add(active)
+            active.user_follow.add(user)
+            active.follow_num += 1
+            active.save() 
+    	    return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+    else:
+        return HttpResponseRedirect('/base')
 
 '''取消关注活动'''
 def delfollow_active(request):
-    if request.method == 'POST':
-    	id = request.POST['id']
-        user = request.user
-        active = Active.objects.get(id=id)
-        user.get_profile().follow.remove(active) 
-	active.user_follow.remove(user)
-        active.follow_num -= 1
-        active.save() 
-    	return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+    if request.user.is_authenticated(): 
+       if request.method == 'POST':
+       	   id = request.POST['id']
+           user = request.user
+           active = Active.objects.get(id=id)
+           user.get_profile().follow.remove(active) 
+           active.user_follow.remove(user)
+           active.follow_num -= 1
+           active.save() 
+    	   return http.HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+    else:
+        return HttpResponseRedirect('/base')
 
 
 '''活动参加的用户列表'''

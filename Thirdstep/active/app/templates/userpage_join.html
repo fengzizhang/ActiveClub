@@ -43,17 +43,19 @@ td button{
   <div class="span3"><h4><a href="/userpage_liunian">参加过得活动留念</a></h4></div>
 </center>
 </div>
+    <div style="margin-top:50px">     
      {% for active in join_actives%}  
-
-      <div class="span2" style="margin-left: 100px;margin-top:90px" ><img src="/static/{{ active.active_headimg }}" width="200px" height="250px"></div>
-      <div class="span5" style="margin-top: 90px">
+     
+      <div class="span2"  ><img src="/static/{{ active.active_headimg }}" width="200px" height="250px"></div>
+      <div class="span2" >
       <h3>{{ active.title }}</h3>
       活动类型：{{ active.choice }}<br>
-      活动时间：{{ active.date }}<br>
+      活动时间：{{ active.date|date:"Y-m-d h:m" }}<br>
       活动地点：{{ active.site }}<br>
       活动费用：{{ active.cost }}<br>
       已有{{ active.join_num }}人参加<br>
       已有{{ active.follow_num }}人关注<br><br />
+      {% if active in activess %}
      {% if active not in user.get_profile.join.all %}     
      <form method="post" action='/join_active/'>
        <input type="hidden" value='{{active.id}}' name='id'>
@@ -64,10 +66,12 @@ td button{
      <button class="btn" type="submit">取消加入</button>
      <input type="hidden" value='{{active.id}}' name='id'>    
      </form>
-       {% endif %} 
-       
+       {% endif %}
+       {% else %} 
+       {% endif %}
+         </div>
      {% endfor %}    
-    </div>
+  </div>
    
 
 <div class="modal" id="myModal">
